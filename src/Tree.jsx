@@ -56,7 +56,6 @@ export const Tree = ({
     setDraggingIndex(null);
   };
 
-  // Add event listeners to the tree container
   useEffect(() => {
     if (draggingIndex !== null) {
       document.addEventListener("mousemove", handleMouseMove);
@@ -69,14 +68,14 @@ export const Tree = ({
   }, [draggingIndex]);
 
   const giftPositions = [
-    { bottom: "7%", left: "9%" },
     { bottom: "13%", left: "20%" },
+    { bottom: "7%", left: "9%" },
     { bottom: "2%", left: "30%" },
   ];
 
   const subPositions = [
-    { bottom: "7%", left: "71%" },
     { bottom: "13%", left: "82%" },
+    { bottom: "7%", left: "71%" },
     { bottom: "2%", left: "92%" },
   ];
 
