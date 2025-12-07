@@ -1,291 +1,72 @@
-const generateRandomizedPositions = () => {
-  // Helper to add randomness to a value
-  const randomize = (base, range) => base + (Math.random() * range * 2 - range);
+import { exportSingleTree } from "./export";
 
-  const basePositions = [
-    // Row 1 - 1 name (top)
-    { top: 14, left: 50, rotate: 5, topRange: 0, leftRange: 3, rotateRange: 5 },
-
-    // Row 2 - 2 names
-    {
-      top: 20,
-      left: 42,
-      rotate: -8,
-      topRange: 0,
-      leftRange: 3,
-      rotateRange: 5,
-    },
-    {
-      top: 20,
-      left: 60,
-      rotate: 10,
-      topRange: 0,
-      leftRange: 3,
-      rotateRange: 5,
-    },
-
-    // Row 3 - 3 names
-    { top: 26, left: 35, rotate: 7, topRange: 2, leftRange: 3, rotateRange: 5 },
-    {
-      top: 24,
-      left: 50,
-      rotate: -5,
-      topRange: 0,
-      leftRange: 3,
-      rotateRange: 5,
-    },
-    { top: 26, left: 65, rotate: 9, topRange: 0, leftRange: 3, rotateRange: 5 },
-
-    // Row 4 - 2 names (narrows)
-    {
-      top: 32,
-      left: 40,
-      rotate: -10,
-      topRange: 0,
-      leftRange: 3,
-      rotateRange: 5,
-    },
-    { top: 32, left: 59, rotate: 8, topRange: 0, leftRange: 3, rotateRange: 5 },
-
-    // Row 5 - 3 names
-    {
-      top: 39,
-      left: 32,
-      rotate: 12,
-      topRange: 0,
-      leftRange: 3,
-      rotateRange: 5,
-    },
-    {
-      top: 37,
-      left: 50,
-      rotate: -7,
-      topRange: 0,
-      leftRange: 3,
-      rotateRange: 5,
-    },
-    {
-      top: 39,
-      left: 70,
-      rotate: 11,
-      topRange: 0,
-      leftRange: 3,
-      rotateRange: 5,
-    },
-
-    // Row 6 - 4 names
-    {
-      top: 44,
-      left: 22,
-      rotate: -9,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    { top: 44, left: 40, rotate: 6, topRange: 0, leftRange: 2, rotateRange: 5 },
-    {
-      top: 44,
-      left: 58,
-      rotate: -11,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    { top: 44, left: 78, rotate: 8, topRange: 0, leftRange: 2, rotateRange: 5 },
-
-    // Row 7 - 4 names
-    {
-      top: 50,
-      left: 23,
-      rotate: 10,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    {
-      top: 50,
-      left: 45,
-      rotate: -8,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    { top: 50, left: 60, rotate: 7, topRange: 0, leftRange: 2, rotateRange: 5 },
-    {
-      top: 50,
-      left: 78,
-      rotate: -12,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-
-    // Row 8 - 5 names
-    {
-      top: 56,
-      left: 18,
-      rotate: -7,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    {
-      top: 56,
-      left: 33,
-      rotate: 11,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    {
-      top: 56,
-      left: 50,
-      rotate: -9,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    { top: 56, left: 67, rotate: 8, topRange: 0, leftRange: 2, rotateRange: 5 },
-    {
-      top: 56,
-      left: 82,
-      rotate: -10,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-
-    // Row 9 - 5 names
-    { top: 62, left: 12, rotate: 9, topRange: 0, leftRange: 2, rotateRange: 5 },
-    {
-      top: 62,
-      left: 29,
-      rotate: -11,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    { top: 62, left: 50, rotate: 6, topRange: 0, leftRange: 2, rotateRange: 5 },
-    {
-      top: 62,
-      left: 70,
-      rotate: -8,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    {
-      top: 62,
-      left: 90,
-      rotate: 12,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-
-    // Row 10 - 6 names (widest)
-    {
-      top: 68,
-      left: 12,
-      rotate: -10,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    { top: 68, left: 27, rotate: 8, topRange: 0, leftRange: 2, rotateRange: 5 },
-    {
-      top: 68,
-      left: 42,
-      rotate: -7,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    {
-      top: 68,
-      left: 58,
-      rotate: 11,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    {
-      top: 68,
-      left: 73,
-      rotate: -9,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    { top: 68, left: 88, rotate: 7, topRange: 0, leftRange: 2, rotateRange: 5 },
-
-    // Row 11 - 3 names (arc end)
-    {
-      top: 74,
-      left: 35,
-      rotate: -9,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-    { top: 75, left: 50, rotate: 7, topRange: 0, leftRange: 2, rotateRange: 5 },
-    {
-      top: 74,
-      left: 65,
-      rotate: -7,
-      topRange: 0,
-      leftRange: 2,
-      rotateRange: 5,
-    },
-  ];
-
-  return basePositions.map((pos) => ({
-    top: `${randomize(pos.top, pos.topRange).toFixed(1)}%`,
-    left: `${randomize(pos.left, pos.leftRange).toFixed(1)}%`,
-    rotate: randomize(pos.rotate, pos.rotateRange).toFixed(1),
-  }));
-};
-
-export const generateTree = (bg, border, treeIndex, subscribers) => {
+export const generateTree = (
+  bg,
+  border,
+  treeIndex,
+  subscribers,
+  getTreePositions,
+  randomizeTree
+) => {
   const startIdx = treeIndex * 38;
   const treeSubs = subscribers.slice(startIdx, startIdx + 38);
 
   if (treeSubs.length === 0) return null;
 
-  const positions = generateRandomizedPositions();
+  const positions = getTreePositions(treeIndex);
 
   return (
     <div
       key={treeIndex}
-      className="tree-item relative inline-block m-8 w-90"
-      style={{ width: "600px" }}
+      className="flex flex-col items-center bg-white rounded-lg shadow-lg p-6 m-4 border-2 border-gray-200"
     >
-      <img src="/arvorinha.png" alt="Christmas Tree" className="w-100" />
+      <div
+        id={`tree-${treeIndex}`}
+        className="tree-item relative inline-block mb-4"
+      >
+        <img src="/arvorinha.png" alt="Christmas Tree" className="w-96" />
 
-      {treeSubs.map((sub, idx) => {
-        const pos = positions[idx] || positions[positions.length - 1];
+        {treeSubs.map((sub, idx) => {
+          const pos = positions[idx] || positions[positions.length - 1];
+          const months = sub.tenure?.months || 0;
 
-        return (
-          <div
-            key={sub.user_id}
-            className="absolute"
-            style={{
-              top: pos.top,
-              left: pos.left,
-              transform: `translate(-50%, -50%) rotate(${pos.rotate}deg)`,
-            }}
-          >
+          return (
             <div
-              className={`${bg} text-white px-3 rounded-full text-sm font-bold border-2 ${border} shadow-lg whitespace-nowrap flex items-center html2canvas-padding `}
+              key={sub.user_id}
               style={{
-                height: "24px",
+                position: "absolute",
+                top: pos.top,
+                left: pos.left,
+                transform: `rotate(${pos.rotate}deg)`,
               }}
             >
-              {sub.user_name}
+              <div style={{ transform: "translate(-50%, -50%)" }}>
+                <div
+                  className={`${bg} text-white px-2 rounded-full font-bold border ${border} shadow-sm whitespace-nowrap flex items-center justify-center html2canvas-padding`}
+                  style={{ height: "18px", fontSize: "9px" }}
+                >
+                  {sub.user_name}
+                </div>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+
+      <div className="flex flex-col gap-2 w-full max-w-xs">
+        <button
+          onClick={() => randomizeTree(treeIndex)}
+          className="w-full bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 text-sm"
+        >
+          🎲 Randomize Positions
+        </button>
+        <button
+          onClick={() => exportSingleTree(treeIndex)}
+          className="w-full bg-green-600 text-white py-2 rounded-lg font-bold hover:bg-green-700 text-sm"
+        >
+          💾 Export This Tree
+        </button>
+      </div>
     </div>
   );
 };

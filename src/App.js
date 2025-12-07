@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Gift } from "lucide-react";
 import { generateTree } from "./generateTree";
 import { MOCK_SUBS } from "./mock";
-import { exportTreesAsPNG } from "./export";
+import { exportAllTrees, exportTreesAsPNG } from "./export";
+import { generateRandomizedPositions } from "./generateRandomizedPositions";
 
 const trees = [
   { bg: "bg-red-600", border: "border-yellow-400" },
@@ -135,6 +136,22 @@ const ChristmasTreeGenerator = () => {
     }
   };
 
+  const [treePositions, setTreePositions] = useState({});
+
+  const getTreePositions = (treeIndex) => {
+    if (!treePositions[treeIndex]) {
+      const newPositions = generateRandomizedPositions();
+      setTreePositions((prev) => ({ ...prev, [treeIndex]: newPositions }));
+      return newPositions;
+    }
+    return treePositions[treeIndex];
+  };
+
+  const randomizeTree = (treeIndex) => {
+    const newPositions = generateRandomizedPositions();
+    setTreePositions((prev) => ({ ...prev, [treeIndex]: newPositions }));
+  };
+
   return (
     <>
       <style>{`
@@ -244,7 +261,7 @@ const ChristmasTreeGenerator = () => {
               </button>
 
               <button
-                onClick={exportTreesAsPNG}
+                onClick={exportAllTrees}
                 disabled={subscribers.length === 0}
                 className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
@@ -280,7 +297,14 @@ const ChristmasTreeGenerator = () => {
       </div>
       <div className="trees-container flex flex-row flex-wrap justify-center bg-gradient-to-b from-cyan-100 to-cyan-200 rounded-lg p-8">
         {trees.map(({ bg, border }, treeIndex) =>
-          generateTree(bg, border, treeIndex, subscribers)
+          generateTree(
+            bg,
+            border,
+            treeIndex,
+            subscribers,
+            getTreePositions,
+            randomizeTree
+          )
         )}
       </div>
     </>
