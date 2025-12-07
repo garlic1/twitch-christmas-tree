@@ -46,7 +46,7 @@ export const Tree = ({
   return (
     <div
       key={treeIndex}
-      className="flex flex-col items-center bg-white rounded-lg shadow-lg p-6 m-4 border-2 border-gray-200"
+      className="flex flex-col items-center p-6 m-4 border-2 bg-gray-800/90 backdrop-blur rounded-lg shadow-xl p-6 mb-8 border-2 border-red-900"
     >
       <div
         id={`tree-${treeIndex}`}
@@ -141,7 +141,7 @@ export const Tree = ({
         </button>
         <button
           onClick={() => exportSingleTree(treeIndex)}
-          className="w-full bg-green-600 text-white py-2 rounded-lg font-bold hover:bg-green-700 text-sm"
+          className="w-full bg-green-700 text-white py-3 rounded-lg font-bold hover:bg-green-600 border border-green-600"
         >
           💾 Export This Tree
         </button>

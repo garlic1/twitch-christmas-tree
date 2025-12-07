@@ -114,23 +114,23 @@ const ChristmasTreeGenerator = () => {
           padding-bottom: 14px !important;
         }
       `}</style>
-      <div className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-200 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-950 to-red-950 p-8">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-4xl font-bold text-center mb-8 text-green-800">
+          <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-red-400 to-green-400 bg-clip-text text-transparent">
             🎄 sarisnatal 🎄
           </h1>
 
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <div className="bg-gray-800/90 backdrop-blur rounded-lg shadow-xl p-6 mb-8 border-2 border-red-900">
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="block text-sm font-medium mb-2 text-gray-200">
                   Upload Subscriber CSV
                 </label>
                 <input
                   type="file"
                   accept=".csv"
                   onChange={handleFileUpload}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-red-500 focus:ring-1 focus:ring-red-500"
                 />
                 <p className="text-xs text-gray-500 mt-2">
                   Expected format: Username,Subscribe Date,Current
@@ -139,7 +139,7 @@ const ChristmasTreeGenerator = () => {
               </div>
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-sm font-medium mb-2 text-gray-200">
                     🎁 Top 3 Gifts
                   </label>
                   <div className="space-y-2">
@@ -150,7 +150,7 @@ const ChristmasTreeGenerator = () => {
                         value={gift}
                         onChange={(e) => updateTopGift(index, e.target.value)}
                         placeholder={`Gift Giver #${index + 1}`}
-                        className="w-full px-4 py-2 border rounded-lg"
+                        className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-red-500 focus:ring-1 focus:ring-red-500"
                       />
                     ))}
                   </div>
@@ -158,7 +158,7 @@ const ChristmasTreeGenerator = () => {
 
                 {/* Top Subs Section */}
                 <div className="flex-1">
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-sm font-medium mb-2 text-gray-200">
                     🎉 Top 3 Bits
                   </label>
                   <div className="space-y-2">
@@ -169,7 +169,7 @@ const ChristmasTreeGenerator = () => {
                         value={sub}
                         onChange={(e) => updateTopSub(index, e.target.value)}
                         placeholder={`Top Sub #${index + 1}`}
-                        className="w-full px-4 py-2 border rounded-lg"
+                        className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-red-500 focus:ring-1 focus:ring-red-500"
                       />
                     ))}
                   </div>
@@ -178,7 +178,7 @@ const ChristmasTreeGenerator = () => {
 
               <button
                 onClick={useMockData}
-                className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700"
+                className="w-full bg-green-700 text-white py-3 rounded-lg font-bold hover:bg-green-600 border border-green-600"
               >
                 Use Mock Data (for testing)
               </button>
@@ -194,21 +194,21 @@ const ChristmasTreeGenerator = () => {
             </div>
 
             {error && (
-              <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
+              <div className="mt-4 p-4 bg-red-900/50 text-red-300 rounded-lg border border-red-700">
                 Error: {error}
               </div>
             )}
 
             {subscribers.length > 0 && (
-              <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
+              <div className="mt-4 p-4 bg-green-900/50 text-green-300 rounded-lg border border-green-700">
                 Found {subscribers.length} subscribers! Generating trees...
               </div>
             )}
           </div>
 
           {subscribers.length === 0 && (
-            <div className="text-center text-gray-600 mt-8">
-              <Gift size={64} className="mx-auto mb-4 text-gray-400" />
+            <div className="text-center text-gray-400 mt-8">
+              <Gift size={64} className="mx-auto mb-4 text-gray-600" />
               <p>
                 Upload a CSV file or use mock data to generate your subscriber
                 trees!
