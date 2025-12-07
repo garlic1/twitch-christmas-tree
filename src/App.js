@@ -224,14 +224,6 @@ const ChristmasTreeGenerator = () => {
                   </div>
                 </div>
               </div>
-
-              <button
-                onClick={useMockData}
-                className="w-full bg-green-700 text-white py-3 rounded-lg font-bold hover:bg-green-600 border border-green-600"
-              >
-                Use Mock Data (for testing)
-              </button>
-
               {subscribers.length > 0 && (
                 <button
                   onClick={() => exportAllTrees(trees, subscribers)}

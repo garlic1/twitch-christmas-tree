@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { exportSingleTree } from "./export";
 import { generateEvenlyDistributedPositions } from "./generatePositions";
 
@@ -15,6 +15,58 @@ export const Tree = ({
   topSubs,
 }) => {
   const [imagesLoaded, setImagesLoaded] = useState({});
+  const [draggingIndex, setDraggingIndex] = useState(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
+  const handleMouseDown = (e, idx) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+    setDraggingIndex(idx);
+  };
+
+  const handleMouseMove = (e) => {
+    if (draggingIndex === null) return;
+
+    const treeElement = document.getElementById(`tree-${treeIndex}`);
+    if (!treeElement) return;
+
+    const treeRect = treeElement.getBoundingClientRect();
+    const newLeft =
+      ((e.clientX - treeRect.left - dragOffset.x) / treeRect.width) * 100;
+    const newTop =
+      ((e.clientY - treeRect.top - dragOffset.y) / treeRect.height) * 100;
+
+    const positions = [...treePositions[treeIndex]];
+    positions[draggingIndex] = {
+      ...positions[draggingIndex],
+      left: `${newLeft.toFixed(1)}%`,
+      top: `${newTop.toFixed(1)}%`,
+    };
+
+    setTreePositions((prev) => ({
+      ...prev,
+      [treeIndex]: positions,
+    }));
+  };
+
+  const handleMouseUp = () => {
+    setDraggingIndex(null);
+  };
+
+  // Add event listeners to the tree container
+  useEffect(() => {
+    if (draggingIndex !== null) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      return () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
+    }
+  }, [draggingIndex]);
 
   const giftPositions = [
     { bottom: "7%", left: "9%" },
@@ -66,11 +118,14 @@ export const Tree = ({
           return (
             <div
               key={sub.user_id}
+              onMouseDown={(e) => handleMouseDown(e, idx)}
               style={{
                 position: "absolute",
                 top: pos.top,
                 left: pos.left,
                 transform: `rotate(${pos.rotate}deg)`,
+                cursor: draggingIndex === idx ? "grabbing" : "grab",
+                userSelect: "none",
               }}
             >
               <div style={{ transform: "translate(-50%, -50%)" }}>
