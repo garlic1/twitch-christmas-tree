@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { exportSingleTree } from "../utils/export";
 import { generateEvenlyDistributedPositions } from "../utils/generatePositions";
+import { useDragAndDrop } from "../hooks/useDragAndDrop";
 
 export const Tree = ({
   bg,
@@ -15,57 +16,6 @@ export const Tree = ({
   topSubs,
 }) => {
   const [imagesLoaded, setImagesLoaded] = useState({});
-  const [draggingIndex, setDraggingIndex] = useState(null);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-
-  const handleMouseDown = (e, idx) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setDragOffset({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
-    setDraggingIndex(idx);
-  };
-
-  const handleMouseMove = (e) => {
-    if (draggingIndex === null) return;
-
-    const treeElement = document.getElementById(`tree-${treeIndex}`);
-    if (!treeElement) return;
-
-    const treeRect = treeElement.getBoundingClientRect();
-    const newLeft =
-      ((e.clientX - treeRect.left - dragOffset.x) / treeRect.width) * 100;
-    const newTop =
-      ((e.clientY - treeRect.top - dragOffset.y) / treeRect.height) * 100;
-
-    const positions = [...treePositions[treeIndex]];
-    positions[draggingIndex] = {
-      ...positions[draggingIndex],
-      left: `${newLeft.toFixed(1)}%`,
-      top: `${newTop.toFixed(1)}%`,
-    };
-
-    setTreePositions((prev) => ({
-      ...prev,
-      [treeIndex]: positions,
-    }));
-  };
-
-  const handleMouseUp = () => {
-    setDraggingIndex(null);
-  };
-
-  useEffect(() => {
-    if (draggingIndex !== null) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-      return () => {
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-      };
-    }
-  }, [draggingIndex]);
 
   const giftPositions = [
     { bottom: "13%", left: "23%" },
@@ -78,6 +28,12 @@ export const Tree = ({
     { bottom: "7%", left: "69%" },
     { bottom: "2%", left: "88%" },
   ];
+
+  const { draggingIndex, handleMouseDown } = useDragAndDrop({
+    treePositions,
+    setTreePositions,
+    treeIndex,
+  });
 
   const startIdx = treeIndex * 36;
   const treeSubs = subscribers.slice(startIdx, startIdx + 36);
@@ -112,7 +68,6 @@ export const Tree = ({
         />
         {treeSubs.map((sub, idx) => {
           const pos = positions[idx] || positions[positions.length - 1];
-          const months = sub.tenure?.months || 0;
           const isHighTier = sub?.tier === "Tier 2" || sub?.tier === "Tier 3";
 
           return (
