@@ -163,11 +163,26 @@ const ChristmasTreeGenerator = () => {
           opacity: 0.8;
         }
       `}</style>
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-950 to-red-950 p-8 starry-bg">
-        <div className="max-w-6xl mx-auto">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-950 to-red-950 p-8 starry-bg ">
+        <div className="max-w-6xl mx-auto relative z-10">
           <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-red-400 to-green-400 bg-clip-text text-transparent">
             🎄 sarisnatal 🎄
           </h1>
+          <a
+            href="https://twitch.tv/sarisla"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block mb-8 mx-auto max-w-2xl"
+          >
+            <div className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 transition-all p-4 rounded-lg shadow-lg border-2 border-purple-400 text-center cursor-pointer transform hover:scale-105">
+              <p className="text-white text-lg font-bold">
+                ✨ Venha fazer parte da árvore! ✨
+              </p>
+              <p className="text-purple-200 text-sm mt-1">
+                twitch.tv/sarisla ♥
+              </p>
+            </div>
+          </a>
 
           <div className="bg-gray-800/90 backdrop-blur rounded-lg shadow-xl p-6 mb-8 border-2 border-red-900">
             <div className="space-y-4">
@@ -276,6 +291,31 @@ const ChristmasTreeGenerator = () => {
             </Fragment>
           ))}
         </div>
+        <footer className="mt-16 py-6 border-t border-gray-700 relative z-10">
+          <div className="max-w-6xl mx-auto text-center">
+            <p className="text-gray-400 text-sm">
+              Desenvolvido com ódio ♥ por{" "}
+              <a
+                href="https://garlico.com.br"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-purple-400 hover:text-purple-300 font-semibold transition-colors"
+              >
+                garlico
+              </a>
+            </p>
+            <p>
+              <a
+                href="https://github.com/garlic1/twitch-christmas-tree"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-green-400 hover:text-green-300 font-semibold transition-colors"
+              >
+                🎄 Source Code 🎄
+              </a>
+            </p>
+          </div>
+        </footer>
       </div>
     </>
   );
