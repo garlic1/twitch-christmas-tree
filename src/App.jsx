@@ -22,21 +22,28 @@ const ChristmasTreeGenerator = () => {
   const [subscribers, setSubscribers] = useState([]);
   const [error, setError] = useState("");
   const [treePositions, setTreePositions] = useState({});
-  const [topGifts, setTopGifts] = useState(["", "", ""]);
-  const [topSubs, setTopSubs] = useState(["", "", ""]);
+  const [topGifts, setTopGifts] = useState(() => {
+    const saved = localStorage.getItem("topGifts");
+    return saved ? JSON.parse(saved) : ["", "", ""];
+  });
+  const [topSubs, setTopSubs] = useState(() => {
+    const saved = localStorage.getItem("topSubs");
+    return saved ? JSON.parse(saved) : ["", "", ""];
+  });
 
   const updateTopGift = (index, value) => {
     const newGifts = [...topGifts];
     newGifts[index] = value;
     setTopGifts(newGifts);
+    localStorage.setItem("topGifts", JSON.stringify(newGifts));
   };
 
   const updateTopSub = (index, value) => {
     const newSubs = [...topSubs];
     newSubs[index] = value;
     setTopSubs(newSubs);
+    localStorage.setItem("topSubs", JSON.stringify(newSubs));
   };
-
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -166,7 +173,7 @@ const ChristmasTreeGenerator = () => {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-950 to-red-950 p-8 starry-bg ">
         <div className="max-w-6xl mx-auto relative z-10">
           <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-red-400 to-green-400 bg-clip-text text-transparent">
-            🎄 sarisnatal 🎄
+            🎄 gerador de árvores dos subs 🎄
           </h1>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 mb-8 max-w-2xl mx-auto">
             <p className="text-center text-gray-300 text-sm">
@@ -184,9 +191,7 @@ const ChristmasTreeGenerator = () => {
               <p className="text-white text-lg font-bold">
                 ✨ venha fazer parte da árvore! ✨
               </p>
-              <p className="text-purple-200 text-sm mt-1">
-                twitch.tv/sarisla
-              </p>
+              <p className="text-purple-200 text-sm mt-1">twitch.tv/sarisla</p>
             </div>
           </a>
 
