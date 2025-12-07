@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { exportSingleTree } from "./export";
-import { generateEvenlyDistributedPositions } from "./generatePositions";
+import { exportSingleTree } from "../utils/export";
+import { generateEvenlyDistributedPositions } from "../utils/generatePositions";
 
 export const Tree = ({
   bg,

@@ -1,3 +1,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.html2canvas-padding {
+  padding-bottom: 0 !important;
+}
+
+body.exporting-canvas .html2canvas-padding {
+  padding-bottom: 14px !important;
+}
+
+.starry-bg {
+  background: linear-gradient(to top, #1e1b4b, #581c87, #4c1d95);
+  position: relative;
+}
+
+.starry-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent),
+    radial-gradient(1px 1px at 15% 90%, white, transparent),
+    radial-gradient(2px 2px at 40% 20%, white, transparent),
+    radial-gradient(1px 1px at 70% 40%, white, transparent),
+    radial-gradient(1px 1px at 25% 60%, white, transparent),
+    radial-gradient(2px 2px at 85% 85%, white, transparent),
+    radial-gradient(1px 1px at 10% 15%, white, transparent),
+    radial-gradient(1px 1px at 95% 35%, white, transparent),
+    radial-gradient(2px 2px at 45% 75%, white, transparent),
+    radial-gradient(1px 1px at 65% 25%, white, transparent),
+    radial-gradient(1px 1px at 30% 45%, white, transparent),
+    radial-gradient(2px 2px at 55% 90%, white, transparent),
+    radial-gradient(1px 1px at 75% 55%, white, transparent),
+    radial-gradient(1px 1px at 5% 70%, white, transparent),
+    radial-gradient(2px 2px at 88% 20%, white, transparent),
+    radial-gradient(1px 1px at 42% 38%, white, transparent),
+    radial-gradient(1px 1px at 68% 82%, white, transparent),
+    radial-gradient(2px 2px at 12% 52%, white, transparent),
+    radial-gradient(1px 1px at 92% 48%, white, transparent),
+    radial-gradient(1px 1px at 38% 12%, white, transparent),
+    radial-gradient(2px 2px at 78% 68%, white, transparent),
+    radial-gradient(1px 1px at 22% 28%, white, transparent),
+    radial-gradient(1px 1px at 58% 58%, white, transparent),
+    radial-gradient(2px 2px at 72% 8%, white, transparent),
+    radial-gradient(1px 1px at 48% 92%, white, transparent);
+  background-size: 100% 100%;
+  background-position: 0% 0%, 40% 60%, 130% 270%, 70% 100%, 20% 50%, 90% 30%,
+    50% 80%, 60% 40%, 110% 150%, 35% 75%, 15% 25%, 85% 85%, 5% 45%, 95% 65%,
+    45% 15%, 75% 95%, 25% 35%, 65% 55%, 55% 75%, 10% 10%, 80% 20%, 30% 90%,
+    100% 50%, 40% 30%, 70% 70%, 20% 60%, 90% 40%, 50% 20%, 60% 80%, 15% 55%;
+  opacity: 0.8;
+}
