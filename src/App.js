@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Gift } from "lucide-react";
 import { generateTree } from "./generateTree";
 import { MOCK_SUBS } from "./mock";
+import { exportTreesAsPNG } from "./export";
 
 const trees = [
   { bg: "bg-red-600", border: "border-yellow-400" },
@@ -135,135 +136,154 @@ const ChristmasTreeGenerator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-200 p-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 text-green-800">
-          🎄 Twitch Subscriber Christmas Trees 🎄
-        </h1>
+    <>
+      <style>{`
+        .html2canvas-padding {
+          padding-bottom: 0 !important;
+        }
+        
+        body.exporting-canvas .html2canvas-padding {
+          padding-bottom: 14px !important;
+        }
+      `}</style>
+      <div className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-200 p-8">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-4xl font-bold text-center mb-8 text-green-800">
+            🎄 Twitch Subscriber Christmas Trees 🎄
+          </h1>
 
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Setup</h2>
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">Setup</h2>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Client ID
-              </label>
-              <input
-                type="text"
-                value={clientId}
-                onChange={(e) => setClientId(e.target.value)}
-                className="w-full px-4 py-2 border rounded-lg"
-                placeholder="Your Twitch App Client ID"
-              />
-            </div>
-
-            {!isLoggedIn ? (
-              <div className="space-y-3">
-                <button
-                  onClick={handleLogin}
-                  disabled={!clientId}
-                  className="w-full bg-purple-600 text-white py-3 rounded-lg font-bold hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                >
-                  Login with Twitch
-                </button>
-
-                <div className="text-center text-sm text-gray-600">
-                  Or enter manually:
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Access Token
-                  </label>
-                  <input
-                    type="password"
-                    value={accessToken}
-                    onChange={(e) => setAccessToken(e.target.value)}
-                    className="w-full px-4 py-2 border rounded-lg"
-                    placeholder="OAuth token with channel:read:subscriptions scope"
-                    autoComplete="new-password"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Broadcaster ID
-                  </label>
-                  <input
-                    type="text"
-                    value={broadcasterId}
-                    onChange={(e) => setBroadcasterId(e.target.value)}
-                    className="w-full px-4 py-2 border rounded-lg"
-                    placeholder="Twitch channel user ID"
-                  />
-                </div>
-
-                <button
-                  onClick={() => setIsLoggedIn(true)}
-                  disabled={!accessToken || !broadcasterId}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                >
-                  Use Manual Credentials
-                </button>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Client ID
+                </label>
+                <input
+                  type="text"
+                  value={clientId}
+                  onChange={(e) => setClientId(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-lg"
+                  placeholder="Your Twitch App Client ID"
+                />
               </div>
-            ) : (
-              <div className="space-y-3">
-                <div className="p-3 bg-green-100 text-green-700 rounded-lg">
-                  ✓ Logged in! Broadcaster ID: {broadcasterId || "Loading..."}
-                </div>
 
-                {broadcasterId && (
+              {!isLoggedIn ? (
+                <div className="space-y-3">
                   <button
-                    onClick={fetchSubscribers}
-                    disabled={loading}
+                    onClick={handleLogin}
+                    disabled={!clientId}
                     className="w-full bg-purple-600 text-white py-3 rounded-lg font-bold hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                   >
-                    {loading ? "Loading..." : "Generate Trees"}
+                    Login with Twitch
                   </button>
-                )}
+
+                  <div className="text-center text-sm text-gray-600">
+                    Or enter manually:
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Access Token
+                    </label>
+                    <input
+                      type="password"
+                      value={accessToken}
+                      onChange={(e) => setAccessToken(e.target.value)}
+                      className="w-full px-4 py-2 border rounded-lg"
+                      placeholder="OAuth token with channel:read:subscriptions scope"
+                      autoComplete="new-password"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Broadcaster ID
+                    </label>
+                    <input
+                      type="text"
+                      value={broadcasterId}
+                      onChange={(e) => setBroadcasterId(e.target.value)}
+                      className="w-full px-4 py-2 border rounded-lg"
+                      placeholder="Twitch channel user ID"
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => setIsLoggedIn(true)}
+                    disabled={!accessToken || !broadcasterId}
+                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  >
+                    Use Manual Credentials
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="p-3 bg-green-100 text-green-700 rounded-lg">
+                    ✓ Logged in! Broadcaster ID: {broadcasterId || "Loading..."}
+                  </div>
+
+                  {broadcasterId && (
+                    <button
+                      onClick={fetchSubscribers}
+                      disabled={loading}
+                      className="w-full bg-purple-600 text-white py-3 rounded-lg font-bold hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      {loading ? "Loading..." : "Generate Trees"}
+                    </button>
+                  )}
+                </div>
+              )}
+
+              <button
+                onClick={useMockData}
+                className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700"
+              >
+                Use Mock Data (for testing)
+              </button>
+
+              <button
+                onClick={exportTreesAsPNG}
+                disabled={subscribers.length === 0}
+                className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                Export Trees as PNG
+              </button>
+            </div>
+
+            {error && (
+              <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
+                Error: {error}
               </div>
             )}
 
-            <button
-              onClick={useMockData}
-              className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700"
-            >
-              Use Mock Data (for testing)
-            </button>
+            {subscribers.length > 0 && (
+              <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                Found {subscribers.length} subscribers! Generating trees...
+              </div>
+            )}
           </div>
 
-          {error && (
-            <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
-              Error: {error}
-            </div>
-          )}
+          {/* Trees */}
 
-          {subscribers.length > 0 && (
-            <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
-              Found {subscribers.length} subscribers! Generating trees...
+          {subscribers.length === 0 && !loading && (
+            <div className="text-center text-gray-600 mt-8">
+              <Gift size={64} className="mx-auto mb-4 text-gray-400" />
+              <p>
+                Enter your Twitch API credentials above to generate your
+                subscriber trees!
+              </p>
             </div>
           )}
         </div>
-
-        {/* Trees */}
-        <div className="flex flex-wrap justify-center bg-gradient-to-b from-cyan-100 to-cyan-200 rounded-lg p-8">
-          {trees.map(({ bg, border }, treeIndex) =>
-            generateTree(bg, border, treeIndex, subscribers)
-          )}
-        </div>
-
-        {subscribers.length === 0 && !loading && (
-          <div className="text-center text-gray-600 mt-8">
-            <Gift size={64} className="mx-auto mb-4 text-gray-400" />
-            <p>
-              Enter your Twitch API credentials above to generate your
-              subscriber trees!
-            </p>
-          </div>
+      </div>
+      <div className="trees-container flex flex-row flex-wrap justify-center bg-gradient-to-b from-cyan-100 to-cyan-200 rounded-lg p-8">
+        {trees.map(({ bg, border }, treeIndex) =>
+          generateTree(bg, border, treeIndex, subscribers)
         )}
       </div>
-    </div>
+    </>
   );
 };
 

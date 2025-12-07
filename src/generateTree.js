@@ -255,8 +255,12 @@ export const generateTree = (bg, border, treeIndex, subscribers) => {
   const positions = generateRandomizedPositions();
 
   return (
-    <div key={treeIndex} className="relative inline-block m-8 w-90" style={{ width: '768px' }}>
-      <img src="/arvorinha.png" alt="Christmas Tree" className="w-100"/>
+    <div
+      key={treeIndex}
+      className="tree-item relative inline-block m-8 w-90"
+      style={{ width: "600px" }}
+    >
+      <img src="/arvorinha.png" alt="Christmas Tree" className="w-100" />
 
       {treeSubs.map((sub, idx) => {
         const pos = positions[idx] || positions[positions.length - 1];
@@ -271,7 +275,12 @@ export const generateTree = (bg, border, treeIndex, subscribers) => {
               transform: `translate(-50%, -50%) rotate(${pos.rotate}deg)`,
             }}
           >
-            <div className={`text-xl ${bg} text-white px-3 ${border} rounded-full text-sm font-bold border-2 border-yellow-400 shadow-lg whitespace-nowrap`}>
+            <div
+              className={`${bg} text-white px-3 rounded-full text-sm font-bold border-2 ${border} shadow-lg whitespace-nowrap flex items-center html2canvas-padding `}
+              style={{
+                height: "24px",
+              }}
+            >
               {sub.user_name}
             </div>
           </div>
