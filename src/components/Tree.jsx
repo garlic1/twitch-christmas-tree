@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { exportSingleTree } from "../utils/export";
 import { generateEvenlyDistributedPositions } from "../utils/generatePositions";
 import { useDragAndDrop } from "../hooks/useDragAndDrop";
@@ -8,7 +8,6 @@ export const Tree = ({
   border,
   treeIndex,
   subscribers,
-  getTreePositions,
   randomizeTree,
   treePositions,
   setTreePositions,
@@ -38,12 +37,19 @@ export const Tree = ({
   const startIdx = treeIndex * 36;
   const treeSubs = subscribers.slice(startIdx, startIdx + 36);
 
+  useEffect(() => {
+    if (treeSubs.length > 0 && !treePositions[treeIndex]) {
+      const newPositions = generateEvenlyDistributedPositions(treeSubs);
+      setTreePositions((prev) => ({ ...prev, [treeIndex]: newPositions }));
+    }
+  }, [treeSubs.length, treeIndex]);
+
   if (treeSubs.length === 0) return null;
 
-  const positions = getTreePositions(treeIndex);
+  const positions = treePositions[treeIndex] || [];
 
   const handleImageLoad = () => {
-    if (!imagesLoaded[treeIndex]) {
+    if (!imagesLoaded[treeIndex] && !treePositions[treeIndex]) {
       setImagesLoaded((prev) => ({ ...prev, [treeIndex]: true }));
       const newPositions = generateEvenlyDistributedPositions(treeSubs);
       setTreePositions((prev) => ({ ...prev, [treeIndex]: newPositions }));
@@ -66,40 +72,43 @@ export const Tree = ({
           className="w-96"
           onLoad={handleImageLoad}
         />
-        {treeSubs.map((sub, idx) => {
-          const pos = positions[idx] || positions[positions.length - 1];
-          const isHighTier = sub?.tier === "Tier 2" || sub?.tier === "Tier 3";
+        {positions.length > 0 &&
+          treeSubs.map((sub, idx) => {
+            const pos = positions[idx];
+            if (!pos) return null;
 
-          return (
-            <div
-              key={sub.user_id}
-              onMouseDown={(e) => handleMouseDown(e, idx)}
-              style={{
-                position: "absolute",
-                top: pos.top,
-                left: pos.left,
-                transform: `rotate(${pos.rotate}deg)`,
-                cursor: draggingIndex === idx ? "grabbing" : "grab",
-                userSelect: "none",
-              }}
-            >
-              <div style={{ transform: "translate(-50%, -50%)" }}>
-                <div
-                  className={`
+            const isHighTier = sub?.tier === "Tier 2" || sub?.tier === "Tier 3";
+
+            return (
+              <div
+                key={sub.user_id}
+                onMouseDown={(e) => handleMouseDown(e, idx)}
+                style={{
+                  position: "absolute",
+                  top: pos.top,
+                  left: pos.left,
+                  transform: `rotate(${pos.rotate}deg)`,
+                  cursor: draggingIndex === idx ? "grabbing" : "grab",
+                  userSelect: "none",
+                }}
+              >
+                <div style={{ transform: "translate(-50%, -50%)" }}>
+                  <div
+                    className={`
                   ${isHighTier ? "bg-yellow-400" : bg} 
                   ${
                     isHighTier ? "text-black" : "text-white"
                   } px-2 rounded-full font-bold border
                   ${isHighTier ? "border-neutral-900" : border} 
                   shadow-sm whitespace-nowrap flex items-center justify-center html2canvas-padding`}
-                  style={{ height: "18px", fontSize: "9px" }}
-                >
-                  {sub.user_name}
+                    style={{ height: "18px", fontSize: "9px" }}
+                  >
+                    {sub.user_name}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
         {topGifts.map(
           (gift, idx) =>
             gift && (

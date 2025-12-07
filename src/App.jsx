@@ -74,18 +74,6 @@ const ChristmasTreeGenerator = () => {
     setError("");
   };
 
-  const getTreePositions = (treeIndex) => {
-    const startIdx = treeIndex * 36;
-    const treeSubs = subscribers.slice(startIdx, startIdx + 36);
-
-    if (!treePositions[treeIndex]) {
-      const newPositions = generateEvenlyDistributedPositions(treeSubs);
-      setTreePositions((prev) => ({ ...prev, [treeIndex]: newPositions }));
-      return newPositions;
-    }
-    return treePositions[treeIndex];
-  };
-
   const randomizeTree = (treeIndex) => {
     const startIdx = treeIndex * 36;
     const treeSubs = subscribers.slice(startIdx, startIdx + 36);
@@ -125,7 +113,6 @@ const ChristmasTreeGenerator = () => {
                 border={border}
                 treeIndex={treeIndex}
                 subscribers={subscribers}
-                getTreePositions={getTreePositions}
                 randomizeTree={randomizeTree}
                 treePositions={treePositions}
                 setTreePositions={setTreePositions}
