@@ -3,7 +3,7 @@ import { Gift } from "lucide-react";
 import { generateTree } from "./generateTree";
 import { MOCK_SUBS } from "./mock";
 import { exportAllTrees, exportTreesAsPNG } from "./export";
-import { generateRandomizedPositions } from "./generateRandomizedPositions";
+import { generateEvenlyDistributedPositions } from "./generatePositions";
 
 const trees = [
   { bg: "bg-red-600", border: "border-yellow-400" },
@@ -139,8 +139,11 @@ const ChristmasTreeGenerator = () => {
   const [treePositions, setTreePositions] = useState({});
 
   const getTreePositions = (treeIndex) => {
+    const startIdx = treeIndex * 38;
+    const treeSubs = subscribers.slice(startIdx, startIdx + 38);
+
     if (!treePositions[treeIndex]) {
-      const newPositions = generateRandomizedPositions();
+      const newPositions = generateEvenlyDistributedPositions(treeSubs);
       setTreePositions((prev) => ({ ...prev, [treeIndex]: newPositions }));
       return newPositions;
     }
@@ -148,7 +151,9 @@ const ChristmasTreeGenerator = () => {
   };
 
   const randomizeTree = (treeIndex) => {
-    const newPositions = generateRandomizedPositions();
+    const startIdx = treeIndex * 38;
+    const treeSubs = subscribers.slice(startIdx, startIdx + 38);
+    const newPositions = generateEvenlyDistributedPositions(treeSubs);
     setTreePositions((prev) => ({ ...prev, [treeIndex]: newPositions }));
   };
 
@@ -294,18 +299,18 @@ const ChristmasTreeGenerator = () => {
             </div>
           )}
         </div>
-      </div>
-      <div className="trees-container flex flex-row flex-wrap justify-center bg-gradient-to-b from-cyan-100 to-cyan-200 rounded-lg p-8">
-        {trees.map(({ bg, border }, treeIndex) =>
-          generateTree(
-            bg,
-            border,
-            treeIndex,
-            subscribers,
-            getTreePositions,
-            randomizeTree
-          )
-        )}
+        <div className="trees-container flex flex-row flex-wrap justify-center">
+          {trees.map(({ bg, border }, treeIndex) =>
+            generateTree(
+              bg,
+              border,
+              treeIndex,
+              subscribers,
+              getTreePositions,
+              randomizeTree
+            )
+          )}
+        </div>
       </div>
     </>
   );
