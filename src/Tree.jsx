@@ -68,15 +68,15 @@ export const Tree = ({
   }, [draggingIndex]);
 
   const giftPositions = [
-    { bottom: "13%", left: "20%" },
-    { bottom: "7%", left: "9%" },
-    { bottom: "2%", left: "30%" },
+    { bottom: "13%", left: "23%" },
+    { bottom: "7%", left: "12%" },
+    { bottom: "2%", left: "32%" },
   ];
 
   const subPositions = [
-    { bottom: "13%", left: "82%" },
-    { bottom: "7%", left: "71%" },
-    { bottom: "2%", left: "92%" },
+    { bottom: "13%", left: "79%" },
+    { bottom: "7%", left: "69%" },
+    { bottom: "2%", left: "88%" },
   ];
 
   const startIdx = treeIndex * 36;
@@ -102,6 +102,7 @@ export const Tree = ({
       <div
         id={`tree-${treeIndex}`}
         className="tree-item relative inline-block mb-4"
+        style={{ padding: "0px 20px", minWidth: "424px" }}
       >
         <img
           src="/arvorona.png"
