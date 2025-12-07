@@ -192,13 +192,13 @@ export const Tree = ({
           onClick={() => randomizeTree(treeIndex)}
           className="w-full bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 text-sm"
         >
-          🎲 Randomize Positions
+          🎲 Randomizar Posições
         </button>
         <button
           onClick={() => exportSingleTree(treeIndex)}
           className="w-full bg-green-700 text-white py-3 rounded-lg font-bold hover:bg-green-600 border border-green-600"
         >
-          💾 Export This Tree
+          💾 Exportar Esta Árvore
         </button>
       </div>
     </div>
