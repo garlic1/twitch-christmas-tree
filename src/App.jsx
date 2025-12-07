@@ -36,6 +36,7 @@ const ChristmasTreeGenerator = () => {
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
+    setSubscribers([])
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -54,6 +55,8 @@ const ChristmasTreeGenerator = () => {
       if (!line) continue;
 
       const values = line.split(",");
+
+      if (values[0] === "sarisla") continue;
 
       subs.push({
         user_id: `csv_${i}`,
