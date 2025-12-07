@@ -1,16 +1,16 @@
 export const generateEvenlyDistributedPositions = (subscribers) => {
   const treeShape = [
-    { row: 1, width: 10, center: 50, yPos: 14, count: 1 },
+    { row: 1, width: 10, center: 50, yPos: 13, count: 1 },
     { row: 2, width: 20, center: 45, yPos: 20, count: 2 },
-    { row: 3, width: 32, center: 40, yPos: 25, count: 3 },
+    { row: 3, width: 32, center: 50, yPos: 25, count: 2 },
     { row: 4, width: 22, center: 45, yPos: 31, count: 2 },
-    { row: 5, width: 40, center: 45, yPos: 37, count: 3 },
+    { row: 5, width: 40, center: 45, yPos: 36, count: 3 },
     { row: 6, width: 58, center: 45, yPos: 43, count: 4 },
     { row: 7, width: 58, center: 45, yPos: 49, count: 4 },
-    { row: 8, width: 68, center: 45, yPos: 55, count: 5 },
+    { row: 8, width: 68, center: 45, yPos: 55, count: 4 },
     { row: 9, width: 82, center: 45, yPos: 61, count: 5 },
-    { row: 10, width: 80, center: 45, yPos: 67, count: 6 },
-    { row: 11, width: 35, center: 45, yPos: 74, count: 3 },
+    { row: 10, width: 80, center: 45, yPos: 67, count: 5 },
+    { row: 11, width: 50, center: 45, yPos: 74, count: 5 },
   ];
 
   const getRotatedDimensions = (width, height, angleDeg) => {

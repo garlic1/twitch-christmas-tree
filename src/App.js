@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, Fragment } from "react";
 import { Gift } from "lucide-react";
-import { generateTree } from "./generateTree";
+import { Tree } from "./Tree";
 import { MOCK_SUBS } from "./mock";
-import { exportAllTrees, exportTreesAsPNG } from "./export";
+import { exportAllTrees } from "./export";
 import { generateEvenlyDistributedPositions } from "./generatePositions";
 
 const trees = [
@@ -10,137 +10,83 @@ const trees = [
   { bg: "bg-purple-600", border: "border-neutral-900" },
   { bg: "bg-blue-600", border: "border-neutral-900" },
   { bg: "bg-green-600", border: "border-lime-400" },
+  { bg: "bg-indigo-700", border: "border-purple-300" },
+  { bg: "bg-teal-700", border: "border-cyan-300" },
+  { bg: "bg-amber-700", border: "border-yellow-200" },
+  { bg: "bg-violet-800", border: "border-fuchsia-300" },
   { bg: "bg-orange-600", border: "border-yellow-300" },
+  { bg: "bg-rose-700", border: "border-pink-300" },
 ];
 
 const ChristmasTreeGenerator = () => {
-  const [clientId, setClientId] = useState("");
-  const [accessToken, setAccessToken] = useState("");
-  const [broadcasterId, setBroadcasterId] = useState("");
   const [subscribers, setSubscribers] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [treePositions, setTreePositions] = useState({});
+  const [topGifts, setTopGifts] = useState(["", "", ""]);
+  const [topSubs, setTopSubs] = useState(["", "", ""]);
 
-  // Check for OAuth token in URL on mount
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (hash) {
-      const params = new URLSearchParams(hash.substring(1));
-      const token = params.get("access_token");
-      if (token) {
-        setAccessToken(token);
-        // Clear the hash from URL
-        window.history.replaceState(null, "", window.location.pathname);
-
-        // Get user info with this token
-        getUserInfo(token);
-      }
-    }
-  }, []);
-
-  const getUserInfo = async (token) => {
-    const storedClientId = clientId || localStorage.getItem("clientId");
-    if (!storedClientId) return;
-
-    try {
-      const response = await fetch("https://api.twitch.tv/helix/users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Client-Id": storedClientId,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.data && data.data[0]) {
-          setBroadcasterId(data.data[0].id);
-          setIsLoggedIn(true);
-        }
-      }
-    } catch (err) {
-      console.error("Error getting user info:", err);
-    }
+  const updateTopGift = (index, value) => {
+    const newGifts = [...topGifts];
+    newGifts[index] = value;
+    setTopGifts(newGifts);
   };
 
-  const handleLogin = () => {
-    if (!clientId) {
-      alert("Please enter your Client ID first");
-      return;
+  const updateTopSub = (index, value) => {
+    const newSubs = [...topSubs];
+    newSubs[index] = value;
+    setTopSubs(newSubs);
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target.result;
+      parseCSV(text);
+    };
+    reader.readAsText(file);
+  };
+
+  const parseCSV = (csvText) => {
+    const lines = csvText.split("\n");
+    const subs = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+
+      const values = line.split(",");
+
+      subs.push({
+        user_id: `csv_${i}`,
+        user_name: values[0],
+        tier: values[2],
+        tenure: {
+          months: parseInt(values[3]) || 0,
+        },
+        streak: parseInt(values[4]) || 0,
+        sub_type: values[5],
+        is_founder: values[6] === "true",
+      });
     }
 
-    localStorage.setItem("clientId", clientId);
-
-    const redirectUri = window.location.origin;
-    const scope = "channel:read:subscriptions";
-    const authUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
-      redirectUri
-    )}&response_type=token&scope=${scope}`;
-
-    window.location.href = authUrl;
+    const sorted = subs.sort((a, b) => b.tenure.months - a.tenure.months);
+    setSubscribers(sorted);
+    setTreePositions({});
+    setError("");
   };
 
   const useMockData = () => {
     setSubscribers(MOCK_SUBS);
+    setTreePositions({});
     setError("");
   };
-
-  const fetchSubscribers = async () => {
-    setLoading(true);
-    setError("");
-
-    try {
-      const allSubs = [];
-      let cursor = null;
-      let hasMore = true;
-
-      while (hasMore) {
-        const url = new URL("https://api.twitch.tv/helix/subscriptions");
-        url.searchParams.append("broadcaster_id", broadcasterId);
-        url.searchParams.append("first", "100");
-        if (cursor) {
-          url.searchParams.append("after", cursor);
-        }
-
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Client-Id": clientId,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(
-            `API Error: ${response.status} ${response.statusText}`
-          );
-        }
-
-        const data = await response.json();
-        allSubs.push(...data.data);
-
-        cursor = data.pagination?.cursor;
-        hasMore = !!cursor;
-      }
-
-      const sorted = allSubs.sort((a, b) => {
-        const monthsA = a.tenure?.months || 0;
-        const monthsB = b.tenure?.months || 0;
-        return monthsB - monthsA;
-      });
-
-      setSubscribers(sorted);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const [treePositions, setTreePositions] = useState({});
 
   const getTreePositions = (treeIndex) => {
-    const startIdx = treeIndex * 38;
-    const treeSubs = subscribers.slice(startIdx, startIdx + 38);
+    const startIdx = treeIndex * 36;
+    const treeSubs = subscribers.slice(startIdx, startIdx + 36);
 
     if (!treePositions[treeIndex]) {
       const newPositions = generateEvenlyDistributedPositions(treeSubs);
@@ -151,8 +97,8 @@ const ChristmasTreeGenerator = () => {
   };
 
   const randomizeTree = (treeIndex) => {
-    const startIdx = treeIndex * 38;
-    const treeSubs = subscribers.slice(startIdx, startIdx + 38);
+    const startIdx = treeIndex * 36;
+    const treeSubs = subscribers.slice(startIdx, startIdx + 36);
     const newPositions = generateEvenlyDistributedPositions(treeSubs);
     setTreePositions((prev) => ({ ...prev, [treeIndex]: newPositions }));
   };
@@ -171,92 +117,64 @@ const ChristmasTreeGenerator = () => {
       <div className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-200 p-8">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl font-bold text-center mb-8 text-green-800">
-            🎄 Twitch Subscriber Christmas Trees 🎄
+            🎄 sarisnatal 🎄
           </h1>
 
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Setup</h2>
-
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Client ID
+                  Upload Subscriber CSV
                 </label>
                 <input
-                  type="text"
-                  value={clientId}
-                  onChange={(e) => setClientId(e.target.value)}
+                  type="file"
+                  accept=".csv"
+                  onChange={handleFileUpload}
                   className="w-full px-4 py-2 border rounded-lg"
-                  placeholder="Your Twitch App Client ID"
                 />
+                <p className="text-xs text-gray-500 mt-2">
+                  Expected format: Username,Subscribe Date,Current
+                  Tier,Tenure,Streak,Sub Type,Founder
+                </p>
               </div>
-
-              {!isLoggedIn ? (
-                <div className="space-y-3">
-                  <button
-                    onClick={handleLogin}
-                    disabled={!clientId}
-                    className="w-full bg-purple-600 text-white py-3 rounded-lg font-bold hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  >
-                    Login with Twitch
-                  </button>
-
-                  <div className="text-center text-sm text-gray-600">
-                    Or enter manually:
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium mb-2">
+                    🎁 Top 3 Gifts
+                  </label>
+                  <div className="space-y-2">
+                    {topGifts.map((gift, index) => (
+                      <input
+                        key={`gift-${index}`}
+                        type="text"
+                        value={gift}
+                        onChange={(e) => updateTopGift(index, e.target.value)}
+                        placeholder={`Gift Giver #${index + 1}`}
+                        className="w-full px-4 py-2 border rounded-lg"
+                      />
+                    ))}
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Access Token
-                    </label>
-                    <input
-                      type="password"
-                      value={accessToken}
-                      onChange={(e) => setAccessToken(e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg"
-                      placeholder="OAuth token with channel:read:subscriptions scope"
-                      autoComplete="new-password"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Broadcaster ID
-                    </label>
-                    <input
-                      type="text"
-                      value={broadcasterId}
-                      onChange={(e) => setBroadcasterId(e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg"
-                      placeholder="Twitch channel user ID"
-                    />
-                  </div>
-
-                  <button
-                    onClick={() => setIsLoggedIn(true)}
-                    disabled={!accessToken || !broadcasterId}
-                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  >
-                    Use Manual Credentials
-                  </button>
                 </div>
-              ) : (
-                <div className="space-y-3">
-                  <div className="p-3 bg-green-100 text-green-700 rounded-lg">
-                    ✓ Logged in! Broadcaster ID: {broadcasterId || "Loading..."}
-                  </div>
 
-                  {broadcasterId && (
-                    <button
-                      onClick={fetchSubscribers}
-                      disabled={loading}
-                      className="w-full bg-purple-600 text-white py-3 rounded-lg font-bold hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    >
-                      {loading ? "Loading..." : "Generate Trees"}
-                    </button>
-                  )}
+                {/* Top Subs Section */}
+                <div className="flex-1">
+                  <label className="block text-sm font-medium mb-2">
+                    🎉 Top 3 Bits
+                  </label>
+                  <div className="space-y-2">
+                    {topSubs.map((sub, index) => (
+                      <input
+                        key={`sub-${index}`}
+                        type="text"
+                        value={sub}
+                        onChange={(e) => updateTopSub(index, e.target.value)}
+                        placeholder={`Top Sub #${index + 1}`}
+                        className="w-full px-4 py-2 border rounded-lg"
+                      />
+                    ))}
+                  </div>
                 </div>
-              )}
+              </div>
 
               <button
                 onClick={useMockData}
@@ -265,13 +183,14 @@ const ChristmasTreeGenerator = () => {
                 Use Mock Data (for testing)
               </button>
 
-              <button
-                onClick={exportAllTrees}
-                disabled={subscribers.length === 0}
-                className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-              >
-                Export Trees as PNG
-              </button>
+              {subscribers.length > 0 && (
+                <button
+                  onClick={() => exportAllTrees(trees, subscribers)}
+                  className="w-full bg-purple-600 text-white py-3 rounded-lg font-bold hover:bg-purple-700"
+                >
+                  Export All Trees
+                </button>
+              )}
             </div>
 
             {error && (
@@ -287,29 +206,34 @@ const ChristmasTreeGenerator = () => {
             )}
           </div>
 
-          {/* Trees */}
-
-          {subscribers.length === 0 && !loading && (
+          {subscribers.length === 0 && (
             <div className="text-center text-gray-600 mt-8">
               <Gift size={64} className="mx-auto mb-4 text-gray-400" />
               <p>
-                Enter your Twitch API credentials above to generate your
-                subscriber trees!
+                Upload a CSV file or use mock data to generate your subscriber
+                trees!
               </p>
             </div>
           )}
         </div>
+
         <div className="trees-container flex flex-row flex-wrap justify-center">
-          {trees.map(({ bg, border }, treeIndex) =>
-            generateTree(
-              bg,
-              border,
-              treeIndex,
-              subscribers,
-              getTreePositions,
-              randomizeTree
-            )
-          )}
+          {trees.map(({ bg, border }, treeIndex) => (
+            <Fragment key={treeIndex}>
+              <Tree
+                bg={bg}
+                border={border}
+                treeIndex={treeIndex}
+                subscribers={subscribers}
+                getTreePositions={getTreePositions}
+                randomizeTree={randomizeTree}
+                treePositions={treePositions}
+                setTreePositions={setTreePositions}
+                topGifts={topGifts}
+                topSubs={topSubs}
+              />
+            </Fragment>
+          ))}
         </div>
       </div>
     </>

@@ -36,8 +36,8 @@ export const exportAllTrees = async (trees, subscribers) => {
     document.body.classList.add("exporting-canvas");
 
     const activeTrees = trees.filter((_, index) => {
-      const startIdx = index * 38;
-      return subscribers.slice(startIdx, startIdx + 38).length > 0;
+      const startIdx = index * 36;
+      return subscribers.slice(startIdx, startIdx + 36).length > 0;
     });
 
     for (let i = 0; i < activeTrees.length; i++) {
