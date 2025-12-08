@@ -151,12 +151,13 @@ export const Tree = ({
         )}
       </div>
 
-      <div className="flex flex-col gap-2 w-full max-w-xs">
+      <div className="flex flex-row gap-2 w-full max-w-xs">
         <button
           onClick={() => randomizeTree(treeIndex)}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 text-sm"
+          className="w-16 bg-red-600 text-white py-2 rounded-lg font-bold hover:bg-red-700 text-sm"
+          title="Randomizar Posições"
         >
-          🎲 Randomizar Posições
+          🎲
         </button>
         <button
           onClick={() => exportSingleTree(treeIndex)}
