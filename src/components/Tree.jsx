@@ -98,10 +98,10 @@ export const Tree = ({
                   ${isHighTier ? "bg-yellow-400" : bg} 
                   ${
                     isHighTier ? "text-black" : "text-white"
-                  } px-2 rounded-full font-bold border
+                  } px-1 rounded-full font-bold border
                   ${isHighTier ? "border-neutral-900" : border} 
                   shadow-sm whitespace-nowrap flex items-center justify-center html2canvas-padding`}
-                    style={{ height: "18px", fontSize: "9px" }}
+                    style={{ height: "14px", fontSize: "9px" }}
                   >
                     {sub.user_name}
                   </div>
@@ -161,7 +161,7 @@ export const Tree = ({
         </button>
         <button
           onClick={() => exportSingleTree(treeIndex)}
-          className="w-full bg-green-700 text-white py-3 rounded-lg font-bold hover:bg-green-600 border border-green-600"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-500 border border-blue-500"
         >
           💾 Exportar Esta Árvore
         </button>
