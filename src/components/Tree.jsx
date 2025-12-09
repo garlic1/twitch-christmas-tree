@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { exportSingleTree } from "../utils/export";
 import { generateEvenlyDistributedPositions } from "../utils/generatePositions";
 import { useDragAndDrop } from "../hooks/useDragAndDrop";
+import { UserTag } from "./UserTag";
+import { GiftTag } from "./GiftTag";
 
 export const Tree = ({
   bg,
@@ -46,7 +48,7 @@ export const Tree = ({
 
   if (treeSubs.length === 0) return null;
 
-  const positions = treePositions[treeIndex] || [];
+  const currentTreePositions = treePositions[treeIndex] || [];
 
   const handleImageLoad = () => {
     if (!imagesLoaded[treeIndex] && !treePositions[treeIndex]) {
@@ -72,81 +74,37 @@ export const Tree = ({
           className="w-96"
           onLoad={handleImageLoad}
         />
-        {positions.length > 0 &&
-          treeSubs.map((sub, idx) => {
-            const pos = positions[idx];
-            if (!pos) return null;
-
-            const isHighTier = sub?.tier === "Tier 2" || sub?.tier === "Tier 3";
-
-            return (
-              <div
-                key={sub.user_id}
-                onMouseDown={(e) => handleMouseDown(e, idx)}
-                style={{
-                  position: "absolute",
-                  top: pos.top,
-                  left: pos.left,
-                  transform: `rotate(${pos.rotate}deg)`,
-                  cursor: draggingIndex === idx ? "grabbing" : "grab",
-                  userSelect: "none",
-                }}
-              >
-                <div style={{ transform: "translate(-50%, -50%)" }}>
-                  <div
-                    className={`
-                  ${isHighTier ? "bg-yellow-400" : bg} 
-                  ${
-                    isHighTier ? "text-black" : "text-white"
-                  } px-1 rounded-full font-bold border
-                  ${isHighTier ? "border-neutral-900" : border} 
-                  shadow-sm whitespace-nowrap flex items-center justify-center html2canvas-padding`}
-                    style={{ height: "14px", fontSize: "9px" }}
-                  >
-                    {sub.user_name}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        {currentTreePositions.length > 0 &&
+          treeSubs.map((user, index) => (
+            <UserTag
+              user={user}
+              index={index}
+              positions={currentTreePositions}
+              handleMouseDown={handleMouseDown}
+              draggingIndex={draggingIndex}
+              colors={{ bg: bg, border: border }}
+            />
+          ))}
         {topGifts.map(
           (gift, idx) =>
             gift && (
-              <div
-                key={`gift-${idx}`}
-                className="absolute"
-                style={{
-                  ...giftPositions[idx],
-                  transform: "translate(-50%, -50%)",
-                }}
-              >
-                <div
-                  className="px-2 bg-yellow-400  text-black border-neutral-900 rounded-full font-bold border shadow-sm whitespace-nowrap flex items-center justify-center  html2canvas-padding"
-                  style={{ height: "18px", fontSize: "9px" }}
-                >
-                  {gift}
-                </div>
-              </div>
+              <GiftTag
+                gift={gift}
+                positions={giftPositions}
+                index={idx}
+                variant={"gift"}
+              />
             )
         )}
         {topSubs.map(
           (gift, idx) =>
             gift && (
-              <div
-                key={`gift-${idx}`}
-                className="absolute"
-                style={{
-                  ...subPositions[idx],
-                  transform: "translate(-50%, -50%)",
-                }}
-              >
-                <div
-                  className="px-2 bg-yellow-400  text-black border-neutral-900 rounded-full font-bold border shadow-sm whitespace-nowrap flex items-center justify-center  html2canvas-padding"
-                  style={{ height: "18px", fontSize: "9px" }}
-                >
-                  {gift}
-                </div>
-              </div>
+              <GiftTag
+                gift={gift}
+                positions={subPositions}
+                index={idx}
+                variant={"cheer"}
+              />
             )
         )}
       </div>
