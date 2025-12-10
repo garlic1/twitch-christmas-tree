@@ -3,7 +3,7 @@ export const Footer = () => {
     <footer className="mt-16 py-6 border-t border-gray-700 relative z-10">
       <div className="max-w-6xl mx-auto text-center">
         <p className="text-gray-400 text-sm">
-          Desenvolvido com ódio ♥ por{" "}
+          Desenvolvido por{" "}
           <a
             href="https://garlico.com.br"
             target="_blank"

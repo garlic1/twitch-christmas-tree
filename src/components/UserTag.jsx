@@ -4,7 +4,8 @@ export const UserTag = ({
   positions,
   handleMouseDown,
   draggingIndex,
-  colors
+  colors,
+  handleTouchStart
 }) => {
   const pos = positions[index];
   if (!pos) return null;
@@ -14,8 +15,8 @@ export const UserTag = ({
 
   return (
     <div
-      key={user.user_id}
       onMouseDown={(e) => handleMouseDown(e, index)}
+      onTouchStart={(e) => handleTouchStart(e, index)}
       style={{
         position: "absolute",
         top: pos.top,

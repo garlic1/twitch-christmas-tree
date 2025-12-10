@@ -36,7 +36,7 @@ const ChristmasTreeGenerator = () => {
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    setSubscribers([])
+    setSubscribers([]);
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -86,8 +86,8 @@ const ChristmasTreeGenerator = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-950 to-red-950 p-8 starry-bg ">
-        <div className="max-w-6xl mx-auto relative z-10">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-950 to-red-950 py-8 sm:p-8 starry-bg">
+        <div className="max-w-6xl mx-auto relative z-10 px-2 sm:px-0 sm:py-8">
           <Header />
 
           <TreeSetupPanel

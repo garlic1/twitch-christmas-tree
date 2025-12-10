@@ -1,7 +1,6 @@
 export const GiftTag = ({ gift, positions, index, variant }) => {
   return (
     <div
-      key={`${variant}-${index}`}
       className="absolute"
       style={{
         ...positions[index],

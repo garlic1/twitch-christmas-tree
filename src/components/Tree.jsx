@@ -30,7 +30,7 @@ export const Tree = ({
     { bottom: "2%", left: "88%" },
   ];
 
-  const { draggingIndex, handleMouseDown } = useDragAndDrop({
+  const { draggingIndex, handleMouseDown, handleTouchStart } = useDragAndDrop({
     treePositions,
     setTreePositions,
     treeIndex,
@@ -66,7 +66,7 @@ export const Tree = ({
       <div
         id={`tree-${treeIndex}`}
         className="tree-item relative inline-block mb-4"
-        style={{ padding: "0px 20px", minWidth: "424px" }}
+        style={{ padding: "0px 20px", width: "424px" }}
       >
         <img
           src="/arvorona.png"
@@ -77,10 +77,12 @@ export const Tree = ({
         {currentTreePositions.length > 0 &&
           treeSubs.map((user, index) => (
             <UserTag
+              key={user.user_id}
               user={user}
               index={index}
               positions={currentTreePositions}
               handleMouseDown={handleMouseDown}
+              handleTouchStart={handleTouchStart}
               draggingIndex={draggingIndex}
               colors={{ bg: bg, border: border }}
             />
@@ -89,21 +91,24 @@ export const Tree = ({
           (gift, idx) =>
             gift && (
               <GiftTag
+                key={`gift-${idx}`}
                 gift={gift}
                 positions={giftPositions}
                 index={idx}
-                variant={"gift"}
+                variant="gift"
               />
             )
         )}
+
         {topSubs.map(
           (gift, idx) =>
             gift && (
               <GiftTag
+                key={`cheer-${idx}`}
                 gift={gift}
                 positions={subPositions}
                 index={idx}
-                variant={"cheer"}
+                variant="cheer"
               />
             )
         )}
